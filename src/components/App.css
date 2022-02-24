@@ -1,1 +1,8 @@
 /* Styles go here */
+.navbar-dark .navbar-brand {
+    color: #ddb429;
+}
+
+#account {
+    color: #ddb429;
+}
