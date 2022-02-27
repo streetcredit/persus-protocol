@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import farmer from '../farmer.png'
+import navBarLogo from '../navBarLogo.png'
 
 class Navbar extends Component {
 
@@ -12,8 +12,8 @@ class Navbar extends Component {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img src={farmer} width="30" height="30" className="d-inline-block align-top" alt="" />
-          &nbsp; Street Credit
+          <img src={navBarLogo} width="30" height="30" className="d-inline-block align-top" alt="" />
+          &nbsp; 
         </a>
 
         <ul className="navbar-nav px-3">

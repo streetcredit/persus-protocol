@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
-import DappToken from '../abis/DappToken.json'
+import StreetCreditToken from '../abis/StreetCreditToken.json'
 import DaiToken from '../abis/DaiToken.json'
-import TokenFarm from '../abis/TokenFarm.json'
+import PersusProtocol from '../abis/PersusProtocol.json'
 import Navbar from './Navbar'
 import Main from './Main'
 import './App.css'
@@ -20,14 +20,14 @@ class App extends Component {
     this.setState({account: accounts[0]})
     const networkId = await web3.eth.net.getId()
     // load the contracts
-    const dappTokenData = DappToken.networks[networkId] 
-    if(dappTokenData) {
-      const dappToken = new web3.eth.Contract(DappToken.abi, dappTokenData.address)
-      this.setState({dappToken: dappToken})
-      const dappTokenBalance = await dappToken.methods.balanceOf(this.state.account).call()
-      this.setState({dappTokenBalance: dappTokenBalance.toString()})
+    const streetCreditTokenData = StreetCreditToken.networks[networkId] 
+    if(streetCreditTokenData) {
+      const streetCreditToken = new web3.eth.Contract(StreetCreditToken.abi, streetCreditTokenData.address)
+      this.setState({streetCreditToken: streetCreditToken})
+      const streetCreditTokenBalance = await streetCreditToken.methods.balanceOf(this.state.account).call()
+      this.setState({streetCreditTokenBalance: streetCreditTokenBalance.toString()})
     } else {
-      window.alert('Dapp Token not deployed to detected network')
+      window.alert('Street Credit Token not deployed to detected network')
     }
     // dai token contract
     const daiTokenData = DaiToken.networks[networkId]
@@ -40,14 +40,14 @@ class App extends Component {
       window.alert('Dai Token not deployed to detected network')
     }
     // token farm contract
-    const tokenFarmData = TokenFarm.networks[networkId]
-    if (tokenFarmData) {
-      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, tokenFarmData.address)
-      this.setState({tokenFarm: tokenFarm})
-      const stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
+    const persusProtocolData = PersusProtocol.networks[networkId]
+    if (persusProtocolData) {
+      const persusProtocol = new web3.eth.Contract(PersusProtocol.abi, persusProtocolData.address)
+      this.setState({persusProtocol: persusProtocol})
+      const stakingBalance = await persusProtocol.methods.stakingBalance(this.state.account).call()
       this.setState({stakingBalance: stakingBalance.toString()})
     } else {
-      window.alert('Token Farm not deployed to detected network')
+      window.alert('Persus Protocol not deployed to detected network')
     }
 
     this.setState({loading: false})
@@ -69,8 +69,8 @@ class App extends Component {
 
   stakeTokens = (amount) => {
     this.setState({ loading: true })
-    this.state.daiToken.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
-      this.state.tokenFarm.methods.stakeTokens(amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
+    this.state.daiToken.methods.approve(this.state.persusProtocol._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
+      this.state.persusProtocol.methods.stakeTokens(amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
         this.setState({ loading: false })
       })
     })
@@ -78,7 +78,7 @@ class App extends Component {
 
   unstakeTokens = (amount) => {
     this.setState({loading: true})
-    this.state.tokenFarm.methods.unstakeTokens(amount).send({from: this.state.account}).on('transactionHash', (hash) => {
+    this.state.persusProtocol.methods.unstakeTokens(amount).send({from: this.state.account}).on('transactionHash', (hash) => {
       this.setState({loading: false})
     })
   }
@@ -88,10 +88,10 @@ class App extends Component {
     this.state = {
       account: '0x0',
       daiToken: {},
-      dappToken: {},
-      tokenFarm: {},
+      streetCreditToken: {},
+      persusProtocol: {},
       daiTokenBalance: '0',
-      dappTokenBalance: '0',
+      streetCreditTokenBalance: '0',
       stakingBalance: '0',
       loading: true
     }
@@ -102,7 +102,7 @@ class App extends Component {
     if(this.state.loading) {
       content = <p id="loader">Loading..</p>
     } else content = <Main 
-                        dappTokenBalance={this.state.dappTokenBalance}
+                        streetCreditTokenBalance={this.state.streetCreditTokenBalance}
                         daiTokenBalance={this.state.daiTokenBalance}
                         stakingBalance={this.state.stakingBalance}
                         stakeTokens={this.stakeTokens}
